@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_login"
+        android:layout_height="match_parent"
+        tools:context=".login">
+
+    <android.support.constraint.Guideline
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_begin="24dp"
+            android:id="@+id/guideline_left"/>
+    <android.support.constraint.Guideline
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline_right"
+            app:layout_constraintGuide_end="24dp"/>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/siga_mobile_logo" app:layout_constraintEnd_toStartOf="@+id/guideline_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_left" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="80dp" android:id="@+id/imageView"/>
+
+    <EditText
+            android:id="@+id/user"
+            android:hint="Login"
+            android:textColor="#fff"
+            android:layout_width="363dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/txteditorb"
+            android:layout_marginTop="60dp"
+            android:padding="16dp"
+            android:textColorHint="#fff"
+            android:inputType="number"
+            tools:layout_editor_absoluteX="16dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+    <EditText
+            android:id="@+id/passwd"
+            android:hint="Senha"
+            android:textColor="#fff"
+            android:layout_width="0dp"
+            android:layout_marginTop="30dp"
+            android:textColorHint="#fff"
+            android:layout_height="wrap_content"
+            android:background="@drawable/txteditorb"
+            android:padding="16dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            android:inputType="textPassword"
+            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/user"/>
+
+    <Button
+            android:hint="Entrar"
+            android:id="@+id/loginbutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/btn_bg"
+            android:textColorHint="#fff"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            tools:layout_editor_absoluteX="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/passwd"/>
+    <TextView
+            android:id="@+id/teste"
+            android:text="só para ver"
+            android:textColor="#FFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            tools:layout_editor_absoluteX="36dp" app:layout_constraintTop_toBottomOf="@+id/loginbutton"/>
+    <ToggleButton
+            android:background="@drawable/eye"
+            android:textOn=" "
+            android:textOff=" "
+            android:layout_width="26dp"
+            android:layout_height="25dp"
+            android:id="@+id/eye"
+            app:layout_constraintBottom_toBottomOf="@+id/passwd"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_right" app:layout_constraintTop_toTopOf="@+id/passwd"
+            android:layout_marginRight="15dp" android:layout_marginEnd="15dp"/>
+
+
+</android.support.constraint.ConstraintLayout>
