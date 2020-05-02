@@ -4,33 +4,86 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import com.loopj.android.image.SmartImageView;
 import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     TextView nome;
+    TextView pr;
+    TextView pp;
+    TextView maiorpr;
+    TextView av;
     String user;
     String passwd;
     String url;
+    Element avisos;
+    private SmartImageView foto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nome = (TextView) findViewById(R.id.name);
-        user = "573733910sp";
-        passwd = "46734427846";
+        foto = (SmartImageView) findViewById(R.id.perfil);
+        pr = (TextView) findViewById(R.id.pr);
+        pp = (TextView) findViewById(R.id.pp);
+        maiorpr = (TextView) findViewById(R.id.toppr);
+        av = (TextView) findViewById(R.id.aviso);
+        try {
+            leitura("myuser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            leitura("mypass");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        url = new network().home;
 
-        url = "https://siga.cps.sp.gov.br/aluno/home.aspx";
-        new conection().execute();
+        if(user != null && passwd != null){
+            System.out.println(user);
+            System.out.println(passwd);
+            new conection().execute();
+        }
+
     }
 
-    public class conection extends AsyncTask<Void,Void,Void> {
-        String words;
-        @Override
-        protected Void doInBackground(Void... voids) {
+    private void leitura(String nome) throws IOException{
+        FileInputStream infl = openFileInput(nome);
 
+        Scanner scanner = new Scanner(infl);
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = scanner.nextLine();
+            sb.append(line);
+            if (nome.contains("mypass")){
+                passwd = sb.toString();
+            }else if (nome.contains("myuser")){
+                user = sb.toString();
+            }
+        }finally {
+            scanner.close();
+        }
+
+    }
+
+    public class conection extends AsyncTask<Void, Void, Void> {
+        String words;
+        String pepe;
+        String prpr;
+        String topr;
+        String teste;
+
+        @Override
+        public Void doInBackground(Void... voids) {
             try {
                 JSONObject extra = new JSONObject();
                 extra.put("MPW0005", "login_top");
@@ -70,10 +123,16 @@ public class MainActivity extends AppCompatActivity {
                 Connection.Response response = connection.execute();
 
                 doc = response.parse();
-
                 words = doc.select("span#span_MPW0041vPRO_PESSOALNOME").first().text();
-                System.out.println(words);
-            }catch (Exception e){e.printStackTrace();}
+                pepe = doc.select("span#span_MPW0041vACD_ALUNOCURSOINDICEPP").first().text();
+                prpr = doc.select("span#span_MPW0041vACD_ALUNOCURSOINDICEPR").first().text();
+                topr = doc.select("span#span_MPW0041vMAX_ACD_ALUNOCURSOINDICEPR").first().text();
+                teste = doc.select("div#MPW0041FOTO").select("img").first().attr("src");
+                avisos = doc;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -81,6 +140,12 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             nome.setText(words);
+            foto.setImageUrl(teste);
+            pp.setText(pepe);
+            pr.setText(prpr);
+            maiorpr.setText(topr);
+            av.setText(new clear().getPlainText(avisos.select("span#span_vTEXTO")));
         }
     }
+
 }

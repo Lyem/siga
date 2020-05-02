@@ -11,14 +11,14 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_begin="24dp"
+            app:layout_constraintGuide_begin="35dp"
             android:id="@+id/guideline_left"/>
     <android.support.constraint.Guideline
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/guideline_right"
-            app:layout_constraintGuide_end="24dp"/>
+            app:layout_constraintGuide_end="48dp"/>
 
     <ImageView
             android:layout_width="wrap_content"
@@ -31,17 +31,25 @@
             android:id="@+id/user"
             android:hint="Login"
             android:textColor="#fff"
-            android:layout_width="363dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/txteditorb"
             android:layout_marginTop="60dp"
             android:padding="16dp"
             android:textColorHint="#fff"
             android:inputType="number"
-            tools:layout_editor_absoluteX="16dp"
             app:layout_constraintStart_toStartOf="@id/guideline_left"
             app:layout_constraintEnd_toStartOf="@id/guideline_right"
             app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="#fff"
+              android:text="SP"
+              android:layout_marginRight="80dp"
+              android:layout_marginHorizontal="10dp"
+              app:layout_constraintEnd_toStartOf="@+id/guideline_right" app:layout_constraintTop_toTopOf="@+id/user"
+              android:layout_marginTop="20dp" app:layout_constraintBottom_toBottomOf="@+id/user"
+              android:layout_marginBottom="17dp"/>
     <EditText
             android:id="@+id/passwd"
             android:hint="Senha"

@@ -1,8 +1,7 @@
 package com.example.siga;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,8 @@ import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+
+import java.io.FileOutputStream;
 
 public class login extends AppCompatActivity {
     int onoff = 0;
@@ -25,7 +25,13 @@ public class login extends AppCompatActivity {
     EditText passwd;
     TextView ts;
     ToggleButton olho;
-    Drawable close;
+    String url;
+    String filenameu = "myuser";
+    String filenames = "mypass";
+    String fileContentsu;
+    String fileContentss;
+    FileOutputStream outputStream;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,7 @@ public class login extends AppCompatActivity {
         ts = (TextView) findViewById(R.id.teste);
         olho = (ToggleButton) findViewById(R.id.eye);
         String icon="closed_eyes_24";
+        url = new network().home;
 
         olho.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,21 +62,21 @@ public class login extends AppCompatActivity {
         });
 
         ts.setText("");
+
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new logar().execute();
+                fileContentsu = user.getText().toString() + "sp";
+                fileContentss = passwd.getText().toString();
+               new conection().execute();
             }
         });
 
     }
-
-
-    public class logar extends AsyncTask<Void,Void,Void>{
-        String words;
+    public class conection extends AsyncTask<Void, Void, Void> {
+        String logo;
         @Override
-        protected Void doInBackground(Void... voids) {
-
+        public Void doInBackground(Void... voids) {
             try {
                 JSONObject extra = new JSONObject();
                 extra.put("MPW0005", "login_top");
@@ -102,26 +109,45 @@ public class login extends AppCompatActivity {
                         .data("GXState", jsonObj.toString())
                         .cookies(loginForm.cookies())
                         .post();
-                Element title = doc.select("title").first();
-                words = title.text();
-            }catch (Exception e){e.printStackTrace();}
+
+                Connection connection = Jsoup.connect(url)
+                        .cookies(loginForm.cookies())
+                        .method(Connection.Method.GET);
+                Connection.Response response = connection.execute();
+
+                doc = response.parse();
+
+                logo = doc.select("title").first().text();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (words.contains("login")){
-                ts.setText("Login_fail");
-            }
-            else if (words.contains("home")){
-                ts.setTextColor(ColorStateList.valueOf(10));
-                ts.setText("Login_success");
+            if (logo.contains("login")){
+                ts.setText("Login_error");
+            }else if (logo.contains("home")){
+                try {
+                    outputStream = openFileOutput(filenameu, Context.MODE_PRIVATE);
+                    outputStream.write(fileContentsu.getBytes());
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    outputStream = openFileOutput(filenames, Context.MODE_PRIVATE);
+                    outputStream.write(fileContentss.getBytes());
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 startActivity(new Intent(getBaseContext(),MainActivity.class));
                 finish();
-            }
-            else {
-                ts.setText("Error");
             }
         }
     }
