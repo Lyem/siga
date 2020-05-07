@@ -2,7 +2,6 @@ package com.example.siga;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -11,9 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import org.json.JSONObject;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.FileOutputStream;
@@ -68,88 +64,35 @@ public class login extends AppCompatActivity {
             public void onClick(View v) {
                 fileContentsu = user.getText().toString() + "sp";
                 fileContentss = passwd.getText().toString();
-               new conection().execute();
+                network nt = new network();
+                nt.setUser(fileContentsu);
+                nt.setPasswd(fileContentss);
+                nt.setUrl(nt.home);
+                Document info = nt.getData();
+                String word = info.select("title").first().text();
+                if (word.contains("login")){
+                    ts.setText("Login_error");
+                }else if (word.contains("home")){
+                    try {
+                        outputStream = openFileOutput(filenameu, Context.MODE_PRIVATE);
+                        outputStream.write(fileContentsu.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        outputStream = openFileOutput(filenames, Context.MODE_PRIVATE);
+                        outputStream.write(fileContentss.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    startActivity(new Intent(getBaseContext(),MainActivity.class));
+                    finish();
+                }
             }
         });
 
-    }
-    public class conection extends AsyncTask<Void, Void, Void> {
-        String logo;
-        @Override
-        public Void doInBackground(Void... voids) {
-            try {
-                JSONObject extra = new JSONObject();
-                extra.put("MPW0005", "login_top");
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("_EventName", "E'EVT_CONFIRMAR'.");
-                jsonObj.put("_EventGridId", "");
-                jsonObj.put("_EventRowId", "");
-                jsonObj.put("MPW0005_CMPPGM", "login_top.aspx");
-                jsonObj.put("MPW0005GX_FocusControl", "");
-                jsonObj.put("vSAIDA", "");
-                jsonObj.put("vREC_SIS_USUARIOID", "");
-                jsonObj.put("GX_FocusControl", "vSIS_USUARIOID");
-                jsonObj.put("GX_AJAX_KEY", "A5B9F9DDEA7C4D2B545B2C46A249948A");
-                jsonObj.put("AJAX_SECURITY_TOKEN", "35931FC765E3775CD4A095723E12D8C584849F732AAA908C903CF485FE2C1C38");
-                jsonObj.put("GX_CMP_OBJS", extra);
-                jsonObj.put("sCallerURL", "");
-                jsonObj.put("GX_RES_PROVIDER", "GXResourceProvider.aspx");
-                jsonObj.put("GX_THEME", "GeneXusX");
-                jsonObj.put("_MODE", "");
-                jsonObj.put("Mode", "");
-                System.out.println(jsonObj);
-
-                Connection.Response loginForm = Jsoup.connect("https://siga.cps.sp.gov.br/aluno/login.aspx")
-                        .method(Connection.Method.GET)
-                        .execute();
-
-                Document doc = Jsoup.connect("https://siga.cps.sp.gov.br/aluno/login.aspx")
-                        .data("vSIS_USUARIOID", user.getText().toString() + "sp")
-                        .data("vSIS_USUARIOSENHA", passwd.getText().toString())
-                        .data("GXState", jsonObj.toString())
-                        .cookies(loginForm.cookies())
-                        .post();
-
-                Connection connection = Jsoup.connect(url)
-                        .cookies(loginForm.cookies())
-                        .method(Connection.Method.GET);
-                Connection.Response response = connection.execute();
-
-                doc = response.parse();
-
-                logo = doc.select("title").first().text();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (logo.contains("login")){
-                ts.setText("Login_error");
-            }else if (logo.contains("home")){
-                try {
-                    outputStream = openFileOutput(filenameu, Context.MODE_PRIVATE);
-                    outputStream.write(fileContentsu.getBytes());
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    outputStream = openFileOutput(filenames, Context.MODE_PRIVATE);
-                    outputStream.write(fileContentss.getBytes());
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                startActivity(new Intent(getBaseContext(),MainActivity.class));
-                finish();
-            }
-        }
     }
 
 }

@@ -1,9 +1,9 @@
 package com.example.siga;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.WindowManager;
 
 public class splash extends AppCompatActivity {
@@ -18,7 +18,7 @@ public class splash extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                logado = 0;
+                logado = fileList().length;
                 if (logado == 0){
                     startActivity(new Intent(getBaseContext(),login.class));
                     finish();

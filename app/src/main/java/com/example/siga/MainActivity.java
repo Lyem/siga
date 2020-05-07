@@ -2,61 +2,80 @@ package com.example.siga;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
-import com.loopj.android.image.SmartImageView;
+import android.view.MenuItem;
 import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
-    TextView nome;
-    TextView pr;
-    TextView pp;
-    TextView maiorpr;
-    TextView av;
-    String user;
-    String passwd;
-    String url;
-    Element avisos;
-    private SmartImageView foto;
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+    private BottomNavigationView navigationView;
+    String nome, foto, pp, pr, maiorpr, av;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nome = (TextView) findViewById(R.id.name);
-        foto = (SmartImageView) findViewById(R.id.perfil);
-        pr = (TextView) findViewById(R.id.pr);
-        pp = (TextView) findViewById(R.id.pp);
-        maiorpr = (TextView) findViewById(R.id.toppr);
-        av = (TextView) findViewById(R.id.aviso);
+        try {
+            leitura("mypass");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try {
             leitura("myuser");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            leitura("mypass");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        url = new network().home;
-
-        if(user != null && passwd != null){
-            System.out.println(user);
-            System.out.println(passwd);
+        if (user != null && passwd != null){
             new conection().execute();
         }
-
+        navigationView = (BottomNavigationView) findViewById(R.id.navigationView);
+        navigationView.setOnNavigationItemSelectedListener(this);
     }
 
-    private void leitura(String nome) throws IOException{
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.nav_home: {
+                home h = new home();
+                fragment = h;
+                h.setNome(nome);
+                openFragment(fragment);
+                System.out.println("home");
+                break;
+            }
+            case R.id.nav_aulas: {
+                System.out.println("aulas");
+                break;
+            }
+            case R.id.nav_logout: {
+                System.out.println("logout");
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    String user, passwd;
+
+    private void leitura(String nome) throws IOException {
         FileInputStream infl = openFileInput(nome);
 
         Scanner scanner = new Scanner(infl);
@@ -64,12 +83,13 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder sb = new StringBuilder();
             String line = scanner.nextLine();
             sb.append(line);
-            if (nome.contains("mypass")){
+            if (nome.contains("mypass")) {
                 passwd = sb.toString();
-            }else if (nome.contains("myuser")){
+            } else if (nome.contains("myuser")) {
                 user = sb.toString();
             }
-        }finally {
+        } finally {
+            network nt = new network();
             scanner.close();
         }
 
@@ -77,11 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
     public class conection extends AsyncTask<Void, Void, Void> {
         String words;
-        String pepe;
-        String prpr;
-        String topr;
-        String teste;
-
         @Override
         public Void doInBackground(Void... voids) {
             try {
@@ -104,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 jsonObj.put("GX_THEME", "GeneXusX");
                 jsonObj.put("_MODE", "");
                 jsonObj.put("Mode", "");
-                System.out.println(jsonObj);
 
                 Connection.Response loginForm = Jsoup.connect("https://siga.cps.sp.gov.br/aluno/login.aspx")
                         .method(Connection.Method.GET)
@@ -117,19 +131,13 @@ public class MainActivity extends AppCompatActivity {
                         .cookies(loginForm.cookies())
                         .post();
 
-                Connection connection = Jsoup.connect(url)
+                Connection connection = Jsoup.connect("https://siga.cps.sp.gov.br/aluno/home.aspx")
                         .cookies(loginForm.cookies())
                         .method(Connection.Method.GET);
                 Connection.Response response = connection.execute();
 
                 doc = response.parse();
                 words = doc.select("span#span_MPW0041vPRO_PESSOALNOME").first().text();
-                pepe = doc.select("span#span_MPW0041vACD_ALUNOCURSOINDICEPP").first().text();
-                prpr = doc.select("span#span_MPW0041vACD_ALUNOCURSOINDICEPR").first().text();
-                topr = doc.select("span#span_MPW0041vMAX_ACD_ALUNOCURSOINDICEPR").first().text();
-                teste = doc.select("div#MPW0041FOTO").select("img").first().attr("src");
-                avisos = doc;
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -139,13 +147,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            nome.setText(words);
-            foto.setImageUrl(teste);
-            pp.setText(pepe);
-            pr.setText(prpr);
-            maiorpr.setText(topr);
-            av.setText(new clear().getPlainText(avisos.select("span#span_vTEXTO")));
+            nome = words;
         }
     }
-
 }
