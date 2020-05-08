@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.loopj.android.image.SmartImageView;
 
-import java.io.IOException;
-
 public class home extends Fragment {
-    String name;
+    String name,prr,ppp,mpr,avv,fotourl;
     TextView nome;
     TextView pr;
     TextView pp;
@@ -48,13 +46,17 @@ public class home extends Fragment {
         maiorpr = (TextView)view.findViewById(R.id.toppr);
         av = (TextView)view.findViewById(R.id.aviso);
         nome = (TextView)view.findViewById(R.id.name);
-
         nome.setText(name);
-
+        pr.setText(prr);
+        pp.setText(ppp);
+        maiorpr.setText(mpr);
+        av.setText(avv);
+        foto.setImageUrl(fotourl);
         return view;
     }
 
     public void setNome(String ovo){
         name = ovo;
+        nome.setText(name);
     }
 }

@@ -20,6 +20,7 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private BottomNavigationView navigationView;
     String nome, foto, pp, pr, maiorpr, av;
+    home h = new home();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         navigationView = (BottomNavigationView) findViewById(R.id.navigationView);
         navigationView.setOnNavigationItemSelectedListener(this);
+        Fragment init = h;
+        openFragment(init);
     }
 
     @Override
@@ -46,19 +49,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_home: {
-                home h = new home();
                 fragment = h;
-                h.setNome(nome);
                 openFragment(fragment);
-                System.out.println("home");
                 break;
             }
             case R.id.nav_aulas: {
-                System.out.println("aulas");
+                fragment = new aulas();
+                openFragment(fragment);
                 break;
             }
-            case R.id.nav_logout: {
-                System.out.println("logout");
+            case R.id.nav_sobre: {
+                fragment = new sobre();
+                openFragment(fragment);
                 break;
             }
         }
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             nome = words;
+            h.setNome(nome);
         }
     }
 }

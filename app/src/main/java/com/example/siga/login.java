@@ -27,7 +27,7 @@ public class login extends AppCompatActivity {
     String fileContentsu;
     String fileContentss;
     FileOutputStream outputStream;
-
+    network nt = new network();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class login extends AppCompatActivity {
         ts = (TextView) findViewById(R.id.teste);
         olho = (ToggleButton) findViewById(R.id.eye);
         String icon="closed_eyes_24";
-        url = new network().home;
+        nt.setUrl(nt.home);
 
         olho.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +62,11 @@ public class login extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ts.setText("");
                 fileContentsu = user.getText().toString() + "sp";
                 fileContentss = passwd.getText().toString();
-                network nt = new network();
                 nt.setUser(fileContentsu);
                 nt.setPasswd(fileContentss);
-                nt.setUrl(nt.home);
                 Document info = nt.getData();
                 String word = info.select("title").first().text();
                 if (word.contains("login")){
