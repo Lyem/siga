@@ -10,13 +10,15 @@ public class network {
 //rotas
     String home = "https://siga.cps.sp.gov.br/aluno/home.aspx";
     String notas = "https://siga.cps.sp.gov.br/aluno/historico.aspx";
+    String horarios = "https://siga.cps.sp.gov.br/aluno/horario.aspx";
 
 //conection info
     String user, passwd, url;
     Document words = null;
 
     public Document getData(){
-        new conection().execute();
+        conection cn = new conection();
+        cn.execute();
         while (words == null) { }
         return words;
     }

@@ -59,4 +59,29 @@ public class home extends Fragment {
         name = ovo;
         nome.setText(name);
     }
+
+    public void setFotourl(String fu){
+        fotourl = fu;
+        foto.setImageUrl(fotourl);
+    }
+
+    public void setPpp(String pppp){
+        ppp = pppp;
+        pp.setText(ppp);
+    }
+
+    public void setPr(String prrr){
+        prr = prrr;
+        pr.setText(prr);
+    }
+
+    public void setMaiorpr(String mprr){
+        mpr = mprr;
+        maiorpr.setText(mpr);
+    }
+
+    public void setAv(String avvv){
+        avv = avvv;
+        av.setText(avv);
+    }
 }
